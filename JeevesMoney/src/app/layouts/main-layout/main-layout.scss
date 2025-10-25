@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // Ocupa a altura total da tela
+}
+
+.content-area {
+  flex: 1; // Faz o conteúdo ocupar todo o espaço disponível
+  overflow-y: auto; // Permite scroll apenas no conteúdo
+  padding: 16px;
+  // Adiciona um "espaço" no final para não ser coberto pelo menu
+  padding-bottom: 80px; 
+}
