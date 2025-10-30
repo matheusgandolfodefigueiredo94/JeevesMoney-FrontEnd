@@ -30,25 +30,13 @@
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
-
+    <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+    </div>
     <button type="submit" [disabled]="isLoading">
       {{ isLoading ? 'Aguarde...' : (isLoginMode ? 'Entrar' : 'Cadastrar') }}
     </button>
   </form>
-
-  <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-
-      <div *ngIf="successMessage" class="success-message">
-        {{ successMessage }}
-      </div>
-
-      <button type="submit" [disabled]="isLoading">
-        {{ isLoading ? 'Aguarde...' : (isLoginMode ? 'Entrar' : 'Cadastrar') }}
-      </button>
-    </form>
-  </div>
 </div>
 
 <style>
