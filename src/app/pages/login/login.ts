@@ -2,32 +2,25 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
-
 import { FormsModule } from '@angular/forms'; 
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; 
 
 @Component({
- selector: 'app-login',
-  standalone: true, // <-- Isso confirma que é um componente standalone
-  imports: [
-    FormsModule,  // <-- 2. ADICIONE AQUI
-    CommonModule  // <-- 3. ADICIONE AQUI (para *ngIf, etc.)
-  ],
-  templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  selector: 'app-login',
+  standalone: true,
+  imports: [ FormsModule, CommonModule ],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
-  // Controla se o formulário está em modo "Login" ou "Cadastro"
   isLoginMode = true; 
-  
-  // Ligados ao formulário via ngModel
   email = '';
   password = '';
 
-  // Controle de UI
   isLoading = false;
   errorMessage = '';
+  successMessage = ''; // <-- Variável de sucesso ADICIONADA
 
   constructor(
     private authService: AuthService,
@@ -42,20 +35,26 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.successMessage = ''; // <-- Limpa a mensagem de sucesso
 
     try {
       if (this.isLoginMode) {
         // --- MODO LOGIN ---
         await this.authService.signIn({ email: this.email, password: this.password });
         
-        // Se o login for bem-sucedido, o onAuthStateChange no serviço
-        // vai disparar, e podemos redirecionar o usuário.
-        this.router.navigate(['/dashboard']); // <-- Mude para sua rota principal
+        // Agora o AuthGuard vai funcionar graças à mudança no serviço.
+        this.router.navigate(['/portfolio']); // <-- CORRIGIDO para /portfolio
 
       } else {
         // --- MODO CADASTRO ---
         await this.authService.signUp({ email: this.email, password: this.password });
-        this.errorMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
+
+        // Define a mensagem de sucesso
+        this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
+        
+        // Limpa o formulário (boa prática)
+        this.email = '';
+        this.password = '';
       }
     } catch (error: any) {
       this.errorMessage = error.message || 'Ocorreu um erro.';

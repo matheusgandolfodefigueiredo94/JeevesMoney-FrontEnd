@@ -55,6 +55,15 @@ export class AuthService {
   async signIn(credentials: { email: string, password: string }): Promise<any> {
     const { data, error } = await this.supabase.auth.signInWithPassword(credentials);
     if (error) throw error;
+
+    // ----- LINHA ADICIONADA -----
+    // Força a atualização do estado de login IMEDIATAMENTE.
+    // Isso garante que o AuthGuard veja "true" no próximo passo.
+    if (data.session) {
+      this._currentUser.next(true);
+    }
+    // -----------------------------
+    
     return data;
   }
 
