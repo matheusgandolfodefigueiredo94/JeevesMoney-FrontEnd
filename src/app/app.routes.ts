@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout';
+import { LoginComponent } from './pages/login/login';
+import { AuthGuard } from './services/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [AuthGuard], 
     children: [
       // Rota padrão: Redireciona para a carteira
       { path: '', redirectTo: 'portfolio', pathMatch: 'full' },
-
+      
       // Rota 1: Carteira (Lazy Loading)
       {
         path: 'portfolio',
@@ -32,7 +35,15 @@ export const routes: Routes = [
       }
     ]
   },
-  // TODO: Adicionar rotas de Login/404 que não usam o layout principal
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: '**',
+    // component: NotFoundComponent // (Descomente se criar o componente)
+    redirectTo: 'login' // Ou simplesmente redirecione para o login
+  }
 ];
 
 @NgModule({
