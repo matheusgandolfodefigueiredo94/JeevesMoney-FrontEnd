@@ -47,7 +47,10 @@ export class AuthService {
   // Método de Cadastro (SignUp)
   async signUp(credentials: { email: string, password: string }): Promise<any> {
     const { data, error } = await this.supabase.auth.signUp(credentials);
-    if (error) throw error;
+    if (error) {
+      console.error('Erro no cadastro:', error);
+      throw new Error(this.getErrorMessage(error.message));
+    }
     return data;
   }
 
@@ -76,5 +79,21 @@ export class AuthService {
   // Pega a sessão atual (útil para enviar o token para sua API .NET)
   get session() {
     return this.supabase.auth.getSession();
+  }
+
+  // Traduz mensagens de erro do Supabase
+  private getErrorMessage(error: string): string {
+    switch (error) {
+      case 'User already registered':
+        return 'Este e-mail já está cadastrado.';
+      case 'Invalid login credentials':
+        return 'E-mail ou senha inválidos.';
+      case 'Email not confirmed':
+        return 'Por favor, confirme seu e-mail antes de fazer login.';
+      case 'Password should be at least 6 characters':
+        return 'A senha deve ter pelo menos 6 caracteres.';
+      default:
+        return 'Ocorreu um erro. Por favor, tente novamente.';
+    }
   }
 }

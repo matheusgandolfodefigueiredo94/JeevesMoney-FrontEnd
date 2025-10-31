@@ -47,17 +47,22 @@ export class LoginComponent {
 
       } else {
         // --- MODO CADASTRO ---
-        await this.authService.signUp({ email: this.email, password: this.password });
-
-        // Define a mensagem de sucesso
-        this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
+        const result = await this.authService.signUp({ email: this.email, password: this.password });
         
-        // Limpa o formulário (boa prática)
-        this.email = '';
-        this.password = '';
+        if (result?.user?.identities?.length === 0) {
+          this.errorMessage = 'Este e-mail já está cadastrado.';
+        } else {
+          // Define a mensagem de sucesso
+          this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
+          
+          // Limpa o formulário (boa prática)
+          this.email = '';
+          this.password = '';
+        }
       }
     } catch (error: any) {
-      this.errorMessage = error.message || 'Ocorreu um erro.';
+      console.error('Erro na autenticação:', error);
+      this.errorMessage = error.message || 'Ocorreu um erro. Por favor, tente novamente.';
     } finally {
       this.isLoading = false;
     }
