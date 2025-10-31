@@ -28,11 +28,11 @@
     </div>
 
     <div *ngIf="errorMessage" class="error-message" role="alert">
-      <span class="material-icons">error_outline</span>
+      <i class="material-icons">error_outline</i>
       {{ errorMessage }}
     </div>
     <div *ngIf="successMessage" class="success-message" role="status">
-      <span class="material-icons">check_circle_outline</span>
+      <i class="material-icons">check_circle_outline</i>
       {{ successMessage }}
     </div>
     <button type="submit" [disabled]="isLoading" [class.loading]="isLoading">

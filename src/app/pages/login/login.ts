@@ -1,5 +1,5 @@
 // src/app/pages/login/login.component.ts
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-login',
   standalone: true,
   imports: [ FormsModule, CommonModule ],
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
@@ -54,6 +55,7 @@ export class LoginComponent {
           this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
           this.email = '';
           this.password = '';
+          this.isLoading = false; // Remove o loading imediatamente após sucesso
           console.log('Cadastro bem-sucedido:', user);
         } else {
           this.errorMessage = 'Erro ao realizar cadastro. Tente novamente.';
@@ -64,10 +66,10 @@ export class LoginComponent {
       console.error('Erro na autenticação:', error);
       this.errorMessage = error.message || 'Ocorreu um erro. Por favor, tente novamente.';
     } finally {
-      // Garante que isLoading seja sempre false no final
-      this.isLoading = false;
-      // Força detecção de mudanças caso necessário
-      setTimeout(() => this.isLoading = false, 0);
+      // Garante que isLoading seja sempre false no final, caso ainda não tenha sido definido
+      if (this.isLoading) {
+        this.isLoading = false;
+      }
     }
   }
 }
