@@ -47,24 +47,27 @@ export class LoginComponent {
 
       } else {
         // --- MODO CADASTRO ---
-        const result = await this.authService.signUp({ email: this.email, password: this.password });
+        const user = await this.authService.signUp({ email: this.email, password: this.password });
         
-        if (result?.user?.identities?.length === 0) {
-          this.errorMessage = 'Este e-mail já está cadastrado.';
-        } else {
-          // Define a mensagem de sucesso
+        if (user && user.confirmation_sent_at) {
+          // Cadastro bem-sucedido
           this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
-          
-          // Limpa o formulário (boa prática)
           this.email = '';
           this.password = '';
+          console.log('Cadastro bem-sucedido:', user);
+        } else {
+          this.errorMessage = 'Erro ao realizar cadastro. Tente novamente.';
+          console.error('Resposta inesperada do cadastro:', user);
         }
       }
     } catch (error: any) {
       console.error('Erro na autenticação:', error);
       this.errorMessage = error.message || 'Ocorreu um erro. Por favor, tente novamente.';
     } finally {
+      // Garante que isLoading seja sempre false no final
       this.isLoading = false;
+      // Força detecção de mudanças caso necessário
+      setTimeout(() => this.isLoading = false, 0);
     }
   }
 }

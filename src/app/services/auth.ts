@@ -45,13 +45,21 @@ export class AuthService {
   }
 
   // Método de Cadastro (SignUp)
-  async signUp(credentials: { email: string, password: string }): Promise<any> {
-    const { data, error } = await this.supabase.auth.signUp(credentials);
-    if (error) {
-      console.error('Erro no cadastro:', error);
-      throw new Error(this.getErrorMessage(error.message));
+  async signUp(credentials: { email: string, password: string }) {
+    try {
+      const { data, error } = await this.supabase.auth.signUp(credentials);
+      
+      if (error) {
+        console.error('Erro no cadastro:', error);
+        throw new Error(this.getErrorMessage(error.message));
+      }
+      
+      console.log('Resposta do cadastro:', data);
+      return data.user; // Retorna diretamente o objeto user
+    } catch (error) {
+      console.error('Erro inesperado no cadastro:', error);
+      throw error;
     }
-    return data;
   }
 
   // Método de Login (SignIn)
