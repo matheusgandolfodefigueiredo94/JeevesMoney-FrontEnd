@@ -1,5 +1,5 @@
 // src/app/pages/login/login.component.ts
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
@@ -25,7 +25,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) { }
 
   async onSubmit() {
@@ -36,26 +37,21 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.errorMessage = '';
-    this.successMessage = ''; // <-- Limpa a mensagem de sucesso
+    this.successMessage = '';
 
     try {
       if (this.isLoginMode) {
-        // --- MODO LOGIN ---
         await this.authService.signIn({ email: this.email, password: this.password });
-        
-        // Agora o AuthGuard vai funcionar graças à mudança no serviço.
-        this.router.navigate(['/portfolio']); // <-- CORRIGIDO para /portfolio
-
+        this.isLoading = false;
+        this.router.navigate(['/portfolio']);
       } else {
-        // --- MODO CADASTRO ---
         const user = await this.authService.signUp({ email: this.email, password: this.password });
-        
+        this.isLoading = false;
         if (user && user.confirmation_sent_at) {
-          // Cadastro bem-sucedido
           this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmação.';
           this.email = '';
           this.password = '';
-          this.isLoading = false; // Remove o loading imediatamente após sucesso
+          this.cdr.detectChanges();
           console.log('Cadastro bem-sucedido:', user);
         } else {
           this.errorMessage = 'Erro ao realizar cadastro. Tente novamente.';
@@ -63,13 +59,9 @@ export class LoginComponent {
         }
       }
     } catch (error: any) {
+      this.isLoading = false;
       console.error('Erro na autenticação:', error);
       this.errorMessage = error.message || 'Ocorreu um erro. Por favor, tente novamente.';
-    } finally {
-      // Garante que isLoading seja sempre false no final, caso ainda não tenha sido definido
-      if (this.isLoading) {
-        this.isLoading = false;
-      }
     }
   }
 }
