@@ -1,1 +1,23 @@
-<p>portfolio-view works!</p>
+<div class="portfolio-container">
+  <h2>Minha Carteira</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="isLoading">
+        <td colspan="2">Carregando...</td>
+      </tr>
+      <tr *ngIf="!isLoading && !errorMessage">
+        <td>{{ stockSymbol }}</td>
+        <td>{{ stockPrice | number:'1.2-2' }}</td>
+      </tr>
+      <tr *ngIf="errorMessage">
+        <td colspan="2">{{ errorMessage }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
