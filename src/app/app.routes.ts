@@ -16,7 +16,7 @@ export const routes: Routes = [
       // Rota 1: Carteira (Lazy Loading)
       {
         path: 'portfolio',
-        loadChildren: () => import('./pages/portfolio/portfolio-module').then(m => m.PortfolioModule)
+        loadComponent: () => import('./pages/portfolio/portfolio-view/portfolio-view').then(m => m.PortfolioView)
       },
       // Rota 2: Cadastrar Ação (Lazy Loading)
       {

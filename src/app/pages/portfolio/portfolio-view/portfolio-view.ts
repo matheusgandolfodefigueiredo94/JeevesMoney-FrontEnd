@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule,DecimalPipe } from '@angular/common';
 import { StockService } from '../../../services/stock.service';
 import { StockQuote } from '../../../domain/stockQuote';
 
@@ -7,7 +7,7 @@ import { StockQuote } from '../../../domain/stockQuote';
 @Component({
   selector: 'app-portfolio-view',
  standalone: true,
-  imports: [DecimalPipe],
+  imports: [CommonModule,DecimalPipe],
   templateUrl: './portfolio-view.html',
   styleUrls: ['./portfolio-view.scss'],
 })
@@ -17,10 +17,9 @@ export class PortfolioView implements OnInit {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private stockService: StockService) {}
+  constructor(private stockService: StockService,private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    console.log('PortfolioView ngOnInit chamado'); // Adicionado para depuração
     this.fetchStockQuote();
   }
 
@@ -32,6 +31,7 @@ export class PortfolioView implements OnInit {
         next: (data: StockQuote) => {
           this.stockPrice = data.price;
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.errorMessage = 'Erro ao buscar cotação.';
